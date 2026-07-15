@@ -1,5 +1,5 @@
-data/chatheads/
-data/bodies/
+# data/chatheads/
+# data/bodies/
 .DS_Store
-data/combined_embeddings.npy
-data/embedding_ids.npy
+# data/combined_embeddings.npy
+# data/embedding_ids.npy
