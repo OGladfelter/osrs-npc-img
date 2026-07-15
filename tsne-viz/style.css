@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  background: #1a1a2e;
+}
+
+#tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  pointer-events: none;
+  display: none;
+}
+
+#viz {
+  width: 100vw;
+  height: 100vh;
+}
