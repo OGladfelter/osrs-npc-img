@@ -61,7 +61,10 @@ if is_wandb_available():
     import wandb
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
-check_min_version("0.40.0.dev0")
+# Pinned to the latest stable PyPI release (0.39.0) instead of the original 0.40.0.dev0 --
+# that dev version requires a source install of diffusers whose dependency requirements
+# (huggingface-hub>=1.23) conflict with the transformers version pinned elsewhere in this repo.
+check_min_version("0.39.0")
 
 logger = get_logger(__name__, log_level="INFO")
 

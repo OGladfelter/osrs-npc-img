@@ -3,3 +3,15 @@
 .DS_Store
 # data/combined_embeddings.npy
 # data/embedding_ids.npy
+
+# generated model checkpoints + generated-image artifacts (regenerable from the notebooks)
+data/*.pth
+data/lora_champion_output/
+data/lora_champion_samples/
+data/gan_challenger_samples/
+data/lora_champion_fid_samples/
+data/gan_challenger_fid_samples/
+data/real_chathead_reference/
+
+__pycache__/
+*.pyc
