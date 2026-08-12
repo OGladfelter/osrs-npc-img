@@ -15,15 +15,53 @@ A third track uses CLIP directly for zero-shot attribute tagging (beard, headwea
 
 ```
 cv-final/
-├── data/               # scraped data, images, embeddings, pipeline CSVs (see below)
-├── img/                # saved plots/figures referenced by the notebooks
-├── python/              # notebooks + scripts, numbered in pipeline order
+├── data/
+│   ├── npc.jsonl, npc.csv                  # scraped dataset (source of truth + built CSV)
+│   ├── npc_pages.csv, npc_hrefs_flat.csv   # scrape checkpoints
+│   ├── chatheads/{id}.png, bodies/{id}.png # raw scraped images
+│   ├── chatheads_processed/{id}.png        # deduped, resized 128x128 set used for generation
+│   │   └── metadata.jsonl                  # final caption manifest for LoRA training
+│   ├── npc_attributes.csv                  # CLIP zero-shot attribute labels
+│   ├── combined_embeddings.npy, embedding_ids.npy       # chathead+body CLIP embeddings (search/t-SNE)
+│   ├── chathead_embeddings.npy, body_embeddings.npy     # per-image-type CLIP embeddings (+ id files)
+│   ├── chathead_lora_manifest.csv          # image+caption manifest used to train the LoRA champion
+│   ├── chathead_near_duplicates.csv        # near-duplicate pairs found via CLIP similarity
+│   ├── chathead_url_mismatches.csv         # name-vs-filename audit from EDA
+│   ├── flagged_candidates.csv, flagged_junk_images.csv, review_progress.csv  # junk-image QA pipeline
+│   └── missing_processed_chatheads.csv     # validation check (empty — nothing missing)
+├── img/                 # ~30 saved plots (EDA, clustering, training curves, confusion matrices,
+│                         #   Grad-CAM, GAN/LoRA samples, classification & generation comparisons)
+├── python/
+│   ├── 01_web_scrape_osrs_wiki.ipynb       # scraping
+│   ├── 02_eda.ipynb                        # EDA
+│   ├── flag_junk_images.ipynb              # CLIP-based junk-image detection
+│   ├── review_app.py                       # Streamlit human review UI
+│   ├── delete_flagged_images.ipynb         # deletes confirmed junk
+│   ├── 03_train.ipynb, 04_eval.ipynb       # early/draft classifier run — superseded, see below
+│   ├── npc_data.py, eval_utils.py          # shared data-split / eval code (classification)
+│   ├── 03a_train_champion_local.ipynb      # classification champion: pretrained ResNet18 x2
+│   ├── 03b_train_custom_cnn.ipynb          # classification challenger: from-scratch CNN x2
+│   ├── 04a_eval_champion_local.ipynb
+│   ├── 04b_eval_custom_cnn.ipynb
+│   ├── 04c_classification_comparison.ipynb # champion vs. challenger head-to-head
+│   ├── 05_clip_attributes.ipynb            # zero-shot CLIP attribute tagging
+│   ├── clip_test.ipynb                     # CLIP visual search + t-SNE data prep
+│   ├── 06_lora_feasibility.ipynb           # dedup, HDBSCAN validation, Human-only LoRA MVP
+│   ├── 07_train_lora_champion.ipynb        # generation champion: LoRA on Stable Diffusion 1.5
+│   ├── 08_train_gan_challenger.ipynb       # generation challenger: conditional DCGAN
+│   ├── 09_eval_image_generation.ipynb      # champion vs. challenger head-to-head
+│   ├── train_text_to_image_lora.py         # vendored HuggingFace diffusers script (dependency)
+│   └── demo_app.py                         # Streamlit demo: both problems, champion vs. challenger
 ├── docs/
 │   └── model_operations.md   # deployment architecture + retraining/maintenance plan
-├── tsne-viz/            # interactive D3.js t-SNE viewer over CLIP embedding space
+├── tsne-viz/                 # interactive D3.js t-SNE viewer over CLIP embedding space
+│   ├── index.html, style.css, script.js
+│   └── tsne_data.json        # built by clip_test.ipynb
 └── presentation/
     └── OSRS_NPC_CV_Final.pptx
 ```
+
+Trained model checkpoints (`.pth` files, `lora_champion_output/`) are not checked into this repo.
 
 ---
 
@@ -63,8 +101,6 @@ Raw scraping picked up ~130 wrong images (chathead/body pulled from a wiki navbo
 - `chathead_lora_manifest.csv` — final image + caption manifest used to train the LoRA champion
 - `chathead_url_mismatches.csv` — name-vs-filename audit from EDA
 - `missing_processed_chatheads.csv` — validation check (currently empty; nothing missing)
-
-Trained model checkpoints (`.pth` files, `lora_champion_output/`) are not checked into this repo.
 
 ---
 
