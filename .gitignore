@@ -1,8 +1,5 @@
-# data/chatheads/
-# data/bodies/
+data/chatheads_processed/
 .DS_Store
-# data/combined_embeddings.npy
-# data/embedding_ids.npy
 
 # generated model checkpoints + generated-image artifacts (regenerable from the notebooks)
 data/*.pth
@@ -14,4 +11,6 @@ data/gan_challenger_fid_samples/
 data/real_chathead_reference/
 
 __pycache__/
-*.pyc
+*.pyc.DS_Store
+*.pth
+lora_champion_output/

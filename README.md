@@ -7,7 +7,7 @@ Two problems, both framed as **champion vs. challenger** — a pretrained/transf
 - **Problem 1 — Classification.** Predict NPC class (Human, Dwarf, Elf, Gnome, Vampyre, Ghost, Monkey, Dorgeshuun, Troll, Cat, or Other) from chathead + body images. Champion: two pretrained ResNet18s. Challenger: two from-scratch CNNs. Champion: 84.4% test accuracy. Challenger: 61.9%.
 - **Problem 2 — Generation.** Generate new NPC chathead art conditioned on class. Champion: LoRA fine-tune of Stable Diffusion 1.5. Challenger: a conditional DCGAN trained from scratch. Champion: FID 234.95, CLIP-score 0.282. Challenger: FID 340.18, CLIP-score 0.242.
 
-A third track uses CLIP directly for zero-shot attribute tagging (beard, headwear, eyewear, etc.) and text/image similarity search over the NPC image embeddings.
+A third track uses CLIP directly: zero-shot attribute tagging (beard, headwear, eyewear, etc.) and a **visual RAG search** — embed all 3,468 NPC chatheads + bodies through CLIP's image encoder, average the pair into one 512-dim vector per NPC (`combined_embeddings.npy`), then at query time encode a text description (e.g. "old man with white beard") and return the top-k NPCs by cosine similarity, images and all.
 
 ---
 
@@ -120,7 +120,7 @@ Numbered where there's a pipeline order; unnumbered files are shared utilities o
 | `04a_eval_champion_local.ipynb`, `04b_eval_custom_cnn.ipynb` | Per-model eval: classification report, confusion matrix, Grad-CAM, t-SNE. |
 | `04c_classification_comparison.ipynb` | Head-to-head: accuracy/F1/precision/recall, per-class F1 gap, ROC/AUC, parameter count/checkpoint size/inference latency. |
 | `05_clip_attributes.ipynb` | Zero-shot CLIP attribute tagging (facial hair, headwear, eyewear, cape, wings, hair color — 6 of 11 tried attributes proved reliable enough to keep). Writes `npc_attributes.csv`. |
-| `clip_test.ipynb` | CLIP embedding + visual search prototyping (text→NPC and image→NPC cosine similarity search); builds the combined embeddings and the sampled `tsne_data.json` used by `tsne-viz/`. |
+| `clip_test.ipynb` | Visual RAG search: embeds all chatheads+bodies via CLIP, averages into one vector/NPC (`combined_embeddings.npy`), then answers text or image queries via cosine similarity, returning top-k matching NPCs. Also builds the sampled `tsne_data.json` used by `tsne-viz/`. |
 | `06_lora_feasibility.ipynb` | Chathead/body resolution EDA, CLIP-based near-duplicate removal, HDBSCAN cluster validation, final processed-image manifest, and a Human-only LoRA proof-of-concept. |
 | `07_train_lora_champion.ipynb` | Trains the generation champion: LoRA fine-tune of Stable Diffusion 1.5 on all 11 classes, using the manifest from `06`. |
 | `08_train_gan_challenger.ipynb` | Trains the generation challenger: a class-conditional DCGAN from scratch. |
