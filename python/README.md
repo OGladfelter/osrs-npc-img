@@ -1,9 +1,7 @@
 # python/
 
-Read top to bottom — this is the actual pipeline order.
-
-## Data
-1. `01_web_scrape_osrs_wiki.ipynb` — scrape
+## Required Data
+1. `01_web_scrape_osrs_wiki.ipynb` — scraping script
 2. `02_eda.ipynb` — EDA
 3. `flag_junk_images.ipynb`, `review_app.py`, `delete_flagged_images.ipynb` — junk-image QA
 
